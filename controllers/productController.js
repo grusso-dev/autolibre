@@ -20,7 +20,7 @@ const productController = {
     db.Producto.findByPk(id, criterio)
       .then(function (results) {
         if (!results) {
-          return res.status(404).send('Producto noo index encontrado');
+          return res.status(404).send('Producto no encontrado en index');
         }
 
         if (req.session.user != undefined && req.session.user.id == results.usuario.id) {
@@ -35,7 +35,7 @@ const productController = {
       })
       .catch(function (error) {
         console.log(error);
-        return res.status(500).send('Error en el servidor');
+        return res.status(500).send('Error en el servidor en index');
       });
   },
 
@@ -49,12 +49,12 @@ const productController = {
     db.Producto.findByPk(id, filtro)
       .then(function (result) {
         if (!result) {
-          return res.status(404).send('Productooo no encontrado');
+          return res.status(404).send('Productooo no encontrado en editProd');
         }
         return res.render("product-edit", { producto: result });
       }).catch(function (err) {
         console.log(err);
-        return res.status(500).send('Error en el servidor');
+        return res.status(500).send('Error en el servidor en editProd');
       });
   },
 
@@ -72,7 +72,7 @@ const productController = {
       db.Producto.findByPk(req.params.id, filtradoEdit)
         .then((resultados) => {
           if (!resultados) {
-            return res.status(404).send('Productooo no encontrado');
+            return res.status(404).send('Productooo no encontrado en editProdForm');
           }
           return res.render('product-edit', {
             errors: errors.array(),
@@ -82,7 +82,7 @@ const productController = {
         })
         .catch((err) => {
           console.log(err);
-          return res.status(500).send('Error en el servidor');
+          return res.status(500).send('Error en el servidor en editProdForm');
         });
     } else {
       let filtroSession = {
@@ -96,7 +96,7 @@ const productController = {
           })
           .catch((err) => {
             console.log(err);
-            return res.status(500).send('Error en el servidor');
+            return res.status(500).send('Error en el servidor en editProdForm');
           });
       } else {
         return res.redirect("/users/profile/id/" + req.params.id);
@@ -121,7 +121,7 @@ const productController = {
     db.Producto.findByPk(id, criterio)
       .then(function (results) {
         if (!results) {
-          return res.status(404).send('Producto noo encontrado');
+          return res.status(404).send('Producto no encontrado en detalle');
         }
 
         if (req.session.user != undefined && req.session.user.id == results.usuario.id) {
@@ -136,7 +136,7 @@ const productController = {
       })
       .catch(function (error) {
         console.log(error);
-        return res.status(500).send('Error en el servidor');
+        return res.status(500).send('Error en el servidor en detalle');
       });
   },
   productAdd: function (req, res) { 
@@ -174,7 +174,7 @@ const productController = {
         })
         .catch((err) => {
           console.log(err);
-          return res.status(500).send('Error en el servidor');
+          return res.status(500).send('Error en el servidor en store');
         });
     } else {
       return res.render('product-add', { errors: errors.mapped(), old: req.body });
@@ -192,13 +192,13 @@ const productController = {
     db.Producto.findByPk(form.id, criterio)
       .then(function (results) {
         if (!results) {
-          return res.status(404).send('Producto no encontrado');
+          return res.status(404).send('Producto no encontrado en formUpdate');
         }
         return res.render('product-edit', { producto: results });
       })
       .catch((err) => {
         console.log(err);
-        return res.status(500).send('Error en el servidor');
+        return res.status(500).send('Error en el servidor en formUpdate');
       });
 
   },
@@ -221,7 +221,7 @@ const productController = {
               return res.redirect("/product/id/" + form.id);
             }).catch((err) => {
               console.log(err);
-              return res.status(500).send('Error en el servidor');
+              return res.status(500).send('Error en el servidor en update');
             });
         } else {
           return res.redirect("/users/profile/id/" + id);
@@ -239,13 +239,13 @@ const productController = {
       db.Producto.findByPk(form.id, criterio2)
         .then(function (results) {
           if (!results) {
-            return res.status(404).send('Producto no encontrado');
+            return res.status(404).send('Producto no encontrado en update');
           }
           return res.render('product-edit', { errors: errors.mapped(), old: req.body, producto: results });
         })
         .catch((err) => {
           console.log(err);
-          return res.status(500).send('Error en el servidor');
+          return res.status(500).send('Error en el servidor en update 2');
         });
     }
   },
@@ -268,7 +268,7 @@ const productController = {
           })
           .catch((err) => {
             console.log(err);
-            return res.status(500).send('Error en el servidor');
+            return res.status(500).send('Error en el servidor en destroy');
           });
       } else {
         return res.redirect("/users/profile/id/" + id);

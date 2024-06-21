@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<!-- Include Head -->
+<%- include("./partials/head") %>
+
+    <body>
+        <!-- Header -->
+        <% if (locals.user != undefined) { %>
+			<%- include('./partials/headerLogueado') %>
+		<% } else { %>
+			<%- include('./partials/header') %>
+		<% } %>
+            <!-- /Header -->
+
+            <!-- Login -->
+            <div class="container form-login-register">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="login-title">Ingresar</h2>
+                    </div>
+                    <div class="col-12">
+                        <form action="/users/login" method="POST">
+                            <div class="formulario">
+                                <label for="nombre">Usuario (email):</label>
+                                <input type="text" class="form-login" id="nombre" name="email" required>
+                                <% if (locals.errors && errors.email) { %>
+									<p class="error"><%= errors.email.msg %></p>
+								<% } %>
+                            </div>
+                            <div class="formulario">
+                                <label for="contrasena">Contraseña:</label>
+                                <input type="password" class="form-login" id="contrasena" name="contrasenia" required>
+                                <% if (locals.errors && errors.contrasenia) { %>
+									<p class="error"><%= errors.contrasenia.msg %></p>
+								<% } %>
+                            </div>
+                            <div class="formulario form-check">
+                                <input type="checkbox" class="form-checkbox" id="recordarme" name="recordarme">
+                                <label class="form-check-label" for="recordarme">Recordarme</label>
+                            </div>
+                            <button type="submit" class="button-form">Ingresar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- footer -->
+            <%- include("./partials/footer") %>
+                <!-- /footer -->
+    </body>
+
+</html>

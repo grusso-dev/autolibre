@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<!-- Include Head -->
+<%- include("./partials/head") %>
+
+
+<% if (locals.user != undefined) { %>
+	<%- include('./partials/headerLogueado') %>
+<% } else { %>
+	<%- include('./partials/header') %>
+<% } %>
+
+	<body>
+		<!-- Header -->
+
+			<!-- /Header -->
+
+			<!-- Novedades -->
+			<div class="container products-wrapper">
+				<div class="row">
+					<div class="col-12">
+						<h2 id="texto-busqueda" class="products-title">Resultados de búsqueda</h2>
+					</div>
+				</div>
+			</div>
+			<div class="container products-wrapper">
+				<div class="row">
+					<% for (let i=0; i < productos.length; i++) { %>
+						<div class="col-12 col-sm-6 col-lg-3">
+							<section class="product-box">
+								<a href="/product/<%= productos[i].id %>">
+									<figure class="product-box_image">
+										<img class="fotoIndex" src="/images/products/<%=  productos[i].imagenProduct  %>">
+									</figure>
+									<article class="product-box_data">
+										<h2>
+											<%= productos[i].nombreProduct %>
+										</h2>
+										<p>
+											<%= productos[i].descripcionProduct %>
+										</p>
+										
+									</article>
+								</a>
+							</section>
+						</div>
+						<% } %>
+
+
+							<!-- footer -->
+							<%- include("./partials/footer") %>
+								<!-- /footer -->
+
+								<script src="/javascripts/search-results.js"></script>
+	</body>
+
+</html>

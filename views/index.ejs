@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<!-- Include Head -->
+<%- include("./partials/head") %>
+
+	<body>
+
+		<!-- Header -->
+		<% if (locals.user != undefined) { %>
+			<%- include('./partials/headerLogueado') %>
+		<% } else { %>
+			<%- include('./partials/header') %>
+		<% } %>
+
+			<!-- Banner -->
+			<div class="banner">
+				<img src="images/auto-banner.jpeg" alt="Banner de ofertas">
+			</div>
+			<!-- /Banner -->
+
+			<!-- Novedades -->
+			<div class="container products-wrapper">
+				<div class="row">
+					<div class="col-12">
+						<h2 class="products-title">Novedades</h2>
+					</div>
+
+					<% for (let i=0; i < productos.length; i++) { %>
+						<div class="col-12 col-sm-6 col-lg-3">
+							<section class="product-box">
+								<a href="/product/<%= productos[i].id %>">
+									<figure class="product-box_image">
+										<img class="fotoIndex" src="/images/products/<%= productos[i].imagenProduct %>"
+											alt="<%= productos[i].nombreProduct %>">
+									</figure>
+									<article class="product-box_data">
+										<h2>
+											<%= productos[i].nombreProduct %>
+										</h2>
+										<p>
+											<%= productos[i].descripcionProduct %>
+										</p>
+										<p>Comentarios: <%= productos[i].comentarios ? productos[i].comentarios.length :
+												0 %>
+										</p>
+									</article>
+								</a>
+								<!--
+								<div class="btns-movies">
+									<a href="/product/product-add/<%= productos[i].id %>" class="btn-special btn-blue">Modificar</a>
+									<form action="/movies/deleteMovie" method="post">
+									  <input type="hidden" name="id" value="<%= productos[i].id %>">
+									  <button class="btn-special btn-red" type="submit">Eliminar</button>
+									</form>
+								</div>
+							-->
+							</section>
+						</div>
+						<% } %>
+
+
+							<!-- /Novedades -->
+							<!-- Más comentados -->
+							<div class="container products-wrapper">
+								<div class="row">
+									<div class="col-12">
+										<h2 class="products-title">Más comentados</h2>
+									</div>
+									<% for (let i=0; i < 4; i++) { %>
+										<div class="col-12 col-sm-6 col-lg-3">
+											<section class="product-box">
+												<a href="/product/view/<%= productos[i].id %>">
+													<figure class="product-box_image">
+														<img class="fotoIndex"
+															src="/images/products/<%= productos[i].imagenProduct %>"
+															alt="<%= productos[i].nombreProduct %>">
+													</figure>
+													<article class="product-box_data">
+														<h2>
+															<%= productos[i].nombreProduct %>
+														</h2>
+														<p>
+															<%= productos[i].descripcionProduct %>
+														</p>
+														<p>Comentarios: <%= productos[i].comentarios ?
+																productos[i].comentarios.length : 0 %>
+														</p>
+													</article>
+												</a>
+											</section>
+										</div>
+										<% } %>
+
+
+											<!-- footer -->
+											<%- include("./partials/footer") %>
+												<!-- /footer -->
+	</body>
+
+</html>

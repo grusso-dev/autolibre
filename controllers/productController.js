@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 
 const productController = {
   index: function (req, res, next) {
+    console.log('GET:INDEX');
     const id = req.params.id;
     let criterio = {
       include: [
@@ -15,6 +16,7 @@ const productController = {
       ],
       order: [[{ model: db.Comentario, as: 'comentarios' }, 'createdAt', 'DESC']]
     }
+
     let condition = false;
 
     db.Producto.findByPk(id, criterio)
@@ -30,7 +32,7 @@ const productController = {
           producto: results,
           comentarios: results.comentarios || [],
           condition: condition,
-          user: req.session.user
+          user: results.clienteId//req.session.user
         });
       })
       .catch(function (error) {
@@ -140,13 +142,16 @@ const productController = {
       });
   },
   productAdd: function (req, res) { 
+    console.log('GET:productAdd');
     res.render("product-add")
    },
   create: function (req, res) {
-    console.log("hola")
     let { nombre, descripcion, imagen } = req.body
+    if(req.session.user==undefined){
+      return res.redirect('/')
+    }
     let id = req.session.user.id
-
+    
 
     db.Producto.create({
       clienteId: id,
@@ -164,13 +169,27 @@ const productController = {
   },
 
   store: function (req, res) {
+    //console.log('Post:store');
+    //console.log(req.session)
     let form = req.body;
     let errors = validationResult(req);
+    //si el usuario no está logueado vuelve a la pagina principal
+    if (req.session == undefined ||req.session.user == undefined) {
+      return res.redirect("/");
+    }
 
     if (errors.isEmpty()) {
-      db.Producto.create(form)
+      //preparo el nuevo auto
+      // lo creo porque antes se hacia el create con la variable form que tenia los imputs del formulario y no venia el usuario
+      newCar ={
+        nombreProduct:form.nombreProduct,
+        imagenProduct:form.imagenProduct,
+        descripcionProduct:form.descripcionProduct,
+        clienteId:req.session.user.id
+      }
+      db.Producto.create(newCar)
         .then((results) => {
-          return res.redirect("/product/id/" + results.id);
+          return res.redirect("/product/" + results.id);
         })
         .catch((err) => {
           console.log(err);

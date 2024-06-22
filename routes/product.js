@@ -26,5 +26,6 @@ router.post("/")
 router.post('/add', productController.store)
 router.post('/edit/:id', validationsEditAdd, productController.editProdForm);
 router.post('/destroy', productController.destroy);
+router.post("/add-coments/:id", productController.addComment);
 
 module.exports = router;

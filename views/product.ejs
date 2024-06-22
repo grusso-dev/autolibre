@@ -16,9 +16,12 @@
             <h2 class="products-title">
                 <%= producto.nombreProduct %>
             </h2>
-            <p class="product-detail-description">
-                <a href="/product/edit/<%= producto.id %>">Editar</a>
-            </p>
+            <% if(propietario){ %>
+                <p class="product-detail-description">
+                    <a href="/product/edit/<%= producto.id %>">Editar</a>
+                </p>
+            
+            <%}%>
         </div>
         <div class="product-detail">
             <div class="row">
@@ -42,11 +45,12 @@
                             </article>
                         <% } %>
                     </section>
-
-                    <form class="form">
-                        <input class="form-input" type="text" value="" placeholder="Agregar comentario" name="comentario">
-                        <button type="submit" class="buy-now-button">AGREGAR COMENTARIO</button>
-                    </form>
+                    <% if(logueado){%>
+                        <form method="POST" action="/product/add-coments/<%=producto.id%>" class="form">
+                            <input class="form-input" type="text" value="" placeholder="Agregar comentario" id="comentario" name="comentario">
+                            <button type="submit" class="buy-now-button">AGREGAR COMENTARIO</button>
+                        </form>
+                    <%} %>
                     <hr>
                 </div>
             </div>

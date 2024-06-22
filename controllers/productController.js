@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 const productController = {
   index: function (req, res, next) {
     console.log('GET:INDEX');
+    // console.log(req.session.user.id)
     const id = req.params.id;
     let criterio = {
       include: [
@@ -17,21 +18,26 @@ const productController = {
       order: [[{ model: db.Comentario, as: 'comentarios' }, 'createdAt', 'DESC']]
     }
 
-    let condition = false;
-
+    let propietario = false
+    let logueado=false
     db.Producto.findByPk(id, criterio)
       .then(function (results) {
         if (!results) {
           return res.status(404).send('Producto no encontrado en index');
         }
-
+        // console.log(results.usuario.id)
         if (req.session.user != undefined && req.session.user.id == results.usuario.id) {
-          condition = true;
+          propietario = true;
         }
+        if(req.session.user != undefined){
+          logueado=true
+        }
+        console.log(propietario);
         res.render('product', {
           producto: results,
           comentarios: results.comentarios || [],
-          condition: condition,
+          propietario: propietario,
+          logueado:logueado,
           user: results.clienteId//req.session.user
         });
       })
@@ -144,6 +150,24 @@ const productController = {
   productAdd: function (req, res) { 
     console.log('GET:productAdd');
     res.render("product-add")
+  },// Nuevo metodo
+  addComment: function (req, res) { 
+    console.log('post:addComment');
+    const id = req.params.id;
+    let {comentario} = req.body;
+    newComment ={
+      productId:id,
+      clienteId:req.session.user.id,
+      comentario:comentario
+    }
+    console.log(newComment)
+    db.Comentario.create(newComment)
+    .then(function (db) {
+      res.redirect('/product/' + id );
+    })
+    .catch(function (er) {
+      console.log(er)
+    })
    },
   create: function (req, res) {
     let { nombre, descripcion, imagen } = req.body
@@ -160,12 +184,12 @@ const productController = {
       descripcionProduct: descripcion,
 
     })
-      .then(function (db) {
-        return res.redirect('/product/' + product.id) //revisar
-      })
-      .catch(function (err) {
-        console.log(err)
-      })
+    .then(function (db) {
+      return res.redirect('/product/' + product.id) //revisar
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
   },
 
   store: function (req, res) {

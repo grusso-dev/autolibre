@@ -5,6 +5,7 @@ var router = express.Router();
 const productController = require("../controllers/productController");
 
 const {body} = require("express-validator");
+const { route } = require('.');
 const validationsEditAdd = [
     body('nombreProduct')
         .notEmpty().withMessage('Este campo es obligatorio.'),
@@ -25,7 +26,11 @@ router.get('/destroy', productController.destroy);
 router.post("/")
 router.post('/add', productController.store)
 router.post('/edit/:id', validationsEditAdd, productController.editProdForm);
-router.post('/destroy', productController.destroy);
+router.post('/destroy/:id', productController.destroy);
 router.post("/add-coments/:id", productController.addComment);
+
+
+
+
 
 module.exports = router;

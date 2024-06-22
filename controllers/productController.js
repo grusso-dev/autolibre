@@ -55,61 +55,85 @@ const productController = {
       ]
     };
     db.Producto.findByPk(id, filtro)
-      .then(function (result) {
-        if (!result) {
-          return res.status(404).send('Productooo no encontrado en editProd');
-        }
-        return res.render("product-edit", { producto: result });
-      }).catch(function (err) {
-        console.log(err);
-        return res.status(500).send('Error en el servidor en editProd');
-      });
+    .then(function (result) {
+      if (!result) {
+        return res.status(404).send('Productooo no encontrado en editProd');
+      }
+      return res.render("product-edit", { producto: result });
+    }).catch(function (err) {
+      console.log(err);
+      return res.status(500).send('Error en el servidor en editProd');
+    });
   },
 
   editProdForm: function (req, res) {
+    console.log('POST: editProdForm');
     let form = req.body;
-    let errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      let filtradoEdit = {
-        include: [
-          { association: "usuario" }
-        ]
-      };
-
-      db.Producto.findByPk(req.params.id, filtradoEdit)
-        .then((resultados) => {
-          if (!resultados) {
-            return res.status(404).send('Productooo no encontrado en editProdForm');
-          }
-          return res.render('product-edit', {
-            errors: errors.array(),
-            old: req.body,
-            productFind: resultados
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.status(500).send('Error en el servidor en editProdForm');
-        });
-    } else {
-      let filtroSession = {
-        where: { id: req.params.id }
-      };
-
-      if (req.session.user) {
-        db.Producto.update(form, filtroSession)
-          .then(() => {
-            return res.redirect("/product/id/" + req.params.id);
-          })
-          .catch((err) => {
-            console.log(err);
-            return res.status(500).send('Error en el servidor en editProdForm');
-          });
-      } else {
-        return res.redirect("/users/profile/id/" + req.params.id);
-      }
+    let filtroSession = {
+      where: { id: req.params.id }
+    };
+    productupdate={
+      nombreProduct:form.nombreProduct,
+      imagenProduct:form.imagenProduct,
+      descripcionProduct:form.descripcionProduct,
+      clienteId:req.session.user.id
     }
+    db.Producto.update(productupdate, filtroSession)
+    .then(() => {
+      return res.redirect("/product/" + req.params.id);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).send('Error en el servidor en editProdForm');
+    });
+    
+    // let errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //   let filtradoEdit = {
+    //     include: [
+    //       { association: "usuario" }
+    //     ]
+    //   };
+
+    //   db.Producto.findByPk(req.params.id, filtradoEdit)
+    //   .then((resultados) => {
+    //     if (!resultados) {
+    //       return res.status(404).send('Productooo no encontrado en editProdForm');
+    //     }
+    //     return res.render('product-edit', {
+    //       errors: errors.array(),
+    //       old: req.body,
+    //       productFind: resultados
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     return res.status(500).send('Error en el servidor en editProdForm');
+    //   });
+    // } else {
+    //   let filtroSession = {
+    //     where: { id: req.params.id }
+    //   };
+    //   productupdate={
+    //     nombreProduct:form.nombreProduct,
+    //     imagenProduct:form.imagenProduct,
+    //     descripcionProduct:form.descripcionProduct,
+    //     clienteId:req.session.user.id
+    //   }
+    //   if (req.session.user) {
+    //     db.Producto.update(productupdate, filtroSession)
+    //       .then(() => {
+    //         return res.redirect("/product/" + req.params.id);
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //         return res.status(500).send('Error en el servidor en editProdForm');
+    //       });
+    //   } else {
+    //     return res.redirect("/users/profile/" + req.params.id);
+    //   }
+    // }
   },
 
   detalle: function (req, res) {
@@ -160,7 +184,7 @@ const productController = {
       clienteId:req.session.user.id,
       comentario:comentario
     }
-    console.log(newComment)
+    // console.log(newComment)
     db.Comentario.create(newComment)
     .then(function (db) {
       res.redirect('/product/' + id );
@@ -294,31 +318,56 @@ const productController = {
   },
 
   destroy: function (req, res) {
-    let form = req.body;
-
+    // let form = req.body;
+    const id = req.params.id;
     let filtrado = {
       where: {
-        id: form.id
+        id: id
       }
     };
-
-    if (req.session.user != undefined) {
-      let id = req.session.user.id;
-      if (form.idUsuario == id) {
-        db.Producto.destroy(filtrado)
-          .then((result) => {
-            return res.redirect("/");
-          })
-          .catch((err) => {
-            console.log(err);
-            return res.status(500).send('Error en el servidor en destroy');
-          });
-      } else {
-        return res.redirect("/users/profile/id/" + id);
+    let filtradoComments = {
+      where: {
+        productId: id
       }
+    };
+    if (req.session.user != undefined) {
+      db.Comentario.destroy(filtradoComments)
+      .then((result) => {
+        db.Producto.destroy(filtrado)
+        .then((result) => {
+          return res.redirect("/");
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.status(500).send('Error en el servidor en destroy');
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).send('Error en el servidor en destroy');
+      });
+      
     } else {
-      return res.redirect("/users/login");
+      return res.redirect("/");
     }
+
+    // if (req.session.user != undefined) {
+    //   let id = req.session.user.id;
+    //   if (form.idUsuario == id) {
+    //     db.Producto.destroy(filtrado)
+    //       .then((result) => {
+    //         return res.redirect("/");
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //         return res.status(500).send('Error en el servidor en destroy');
+    //       });
+    //   } else {
+    //     return res.redirect("/users/profile/id/" + id);
+    //   }
+    // } else {
+    //   return res.redirect("/users/login");
+    // }
   }
 }
 

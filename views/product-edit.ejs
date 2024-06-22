@@ -20,10 +20,10 @@
 					</div>
 					<!-- Show the "ultimos" products -->
 					<h2 class="col-12">
-						<form action="/" method="GET" class="form-login-register">
+						<form action="/product/edit/<%=producto.id%>" method="POST" class="form-login-register">
 							<div class="formulario">
 								<label for="nombre" style="font-size: 18px;">Nombre del Producto:</label>
-								<input type="text" class="form-login" id="nombre" name="nombreProduct" required>
+								<input type="text" class="form-login" id="nombre" name="nombreProduct" value="<%=producto.nombreProduct%>" required>
 								<% if (locals.errors && errors.nombreProduct) { %>
 									<p class="error"><%= errors.nombreProduct.msg %></p>
 								<% } %>
@@ -46,6 +46,10 @@
 									
 							</div>
 							<button type="submit" class="button-form">Enviar</button>
+						</form>
+
+						<form method="POST" action="/product/destroy/<%=producto.id%>">
+							<button type="submit" class="button-form">Eliminar</button>
 						</form>
 
 

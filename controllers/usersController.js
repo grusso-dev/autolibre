@@ -143,26 +143,26 @@ const usersController = {
     
 
     profile: function (req, res) {
+        console.log('GET:profile')
         let idUsuario = req.params.id;
+        console.log(req.session.user);
         let relaciones = { include: [{ association: 'productos' }, { association: 'comentarios' }], 
         order: [[{model: db.Producto, as: 'productos'}, 'createdAt', 'DESC']] };
         
     
         db.User.findByPk(idUsuario, relaciones)
-            .then(function (result) {
-                let condition = false;
-    
-                if (req.session.user != undefined && req.session.user.id == result.idUsuario) {
-                    condition = true;
-                    console.log("hola")
-                }
-    
-               return res.render('profile', { user: result, condition: condition });
-            })
-            .catch(function (err) {
-                console.error('Error al buscar usuario:', err);
-                res.status(500).send('Error en el servidor');
-            });
+        .then(function (result) {
+            let condition = false;
+
+            if (req.session.user != undefined && req.session.user.id == result.idUsuario) {
+                condition = true;
+            }
+            return res.render('profile', { user2:req.session.user,user: result, condition: condition });
+        })
+        .catch(function (err) {
+            console.error('Error al buscar usuario:', err);
+            res.status(500).send('Error en el servidor');
+        });
     },
     
     

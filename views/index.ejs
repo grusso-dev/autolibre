@@ -30,8 +30,16 @@
 							<section class="product-box">
 								<a href="/product/<%= productos[i].id %>">
 									<figure class="product-box_image">
-										<img class="fotoIndex" src="/images/products/<%= productos[i].imagenProduct %>"
-											alt="<%= productos[i].nombreProduct %>">
+										<%if(productos[i].imagenProduct[0]!='H'){	%>
+											<img class="fotoIndex" src="/images/products/<%= productos[i].imagenProduct %>"
+												alt="<%= productos[i].nombreProduct %>">
+
+										<% }else {
+											%>
+											<img class="fotoIndex" src="<%= productos[i].imagenProduct %>"
+												alt="<%= productos[i].nombreProduct %>">
+											<%
+										}%>
 									</figure>
 									<article class="product-box_data">
 										<h2>

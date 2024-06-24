@@ -157,7 +157,7 @@ const usersController = {
             if (req.session.user != undefined && req.session.user.id == result.idUsuario) {
                 condition = true;
             }
-            return res.render('profile', { user2:req.session.user,user: result, condition: condition });
+            return res.render('profile', { user:req.session.user,userFound: result, condition: condition });
         })
         .catch(function (err) {
             console.error('Error al buscar usuario:', err);
